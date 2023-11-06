@@ -75,15 +75,11 @@ export const handleLogin = async ({ username, password }: HandleLoginProps) => {
     });
 
     const data = await response.json();
-    if (response.ok) {
-      await saveValue("authToken", data.access_token);
-      //   onLoginSuccess();
-    } else {
-      alert("Login Failed, Incorrect username or password");
-    }
+    return { access_token: data.access_token || null, detail: data.detail };
   } catch (error) {
     console.error(error);
     alert("Error, An error occurred during login.");
+    return { access_token: null, detail: error };
   }
 };
 
