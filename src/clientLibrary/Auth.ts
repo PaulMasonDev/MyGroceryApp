@@ -1,10 +1,7 @@
 import { BACKEND_API } from "../constants";
-import { saveValue } from "../utils/secureStorage";
 
 export const getMe = async () => {
-  // /users/me/
   try {
-    // API call to your backend registration route
     const response = await fetch(`${BACKEND_API}/auth/users/me/`, {
       method: "GET",
       credentials: "include",
