@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { getMe, handleLogin, handleLogout } from "../../clientLibrary/Auth";
+import {
+  getUserInfo,
+  handleLogin,
+  handleLogout,
+} from "../../clientLibrary/Auth";
 import { View, TextInput, Button, StyleSheet } from "react-native";
 import { removeValue } from "../../utils/secureStorage";
 
@@ -9,6 +13,8 @@ const LoginScreen: React.FC = () => {
 
   const handleSubmit = async () => {
     await handleLogin({ username, password });
+    const response = await getUserInfo();
+    console.log({ response });
   };
 
   return (
@@ -27,7 +33,6 @@ const LoginScreen: React.FC = () => {
         style={styles.input}
       />
       <Button title="Log In" onPress={handleSubmit} />
-      <Button title="Get Me" onPress={getMe} />
     </View>
   );
 };

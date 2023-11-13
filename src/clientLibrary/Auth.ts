@@ -1,22 +1,5 @@
 import { BACKEND_API } from "../constants";
 
-export const getMe = async () => {
-  try {
-    const response = await fetch(`${BACKEND_API}/auth/users/me/`, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    const data = await response.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error(error);
-    alert(`Error: An error occurred .`);
-    return {};
-  }
-};
-
 interface HandleRegistrationProps {
   username: string;
   password: string;
@@ -57,6 +40,26 @@ interface HandleLoginProps {
   username: string;
   password: string;
 }
+
+export const getUserInfo = async () => {
+  try {
+    const response = await fetch(`${BACKEND_API}/auth/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      credentials: "include",
+    });
+
+    const data = await response.json();
+    console.log({ data });
+    return data;
+  } catch (error) {
+    console.error(error);
+    alert("Error, An error occurred during login.");
+    return error;
+  }
+};
 
 export const handleLogin = async ({ username, password }: HandleLoginProps) => {
   try {

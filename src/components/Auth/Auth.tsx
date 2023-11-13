@@ -4,21 +4,24 @@ import {
   handleLogin,
   handleRegistration,
   handleLogout,
-  getMe,
+  getUserInfo,
 } from "../../clientLibrary/Auth";
+import useUserStore from "../../utils/store";
 
 const AuthScreen: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [title, setTitle] = useState("");
+  const { setUser } = useUserStore();
 
   const handleLoginSubmit = async () => {
     const data = await handleLogin({ username, password });
-    alert(data.detail);
     if (data && data.access_token) {
       setIsAuthenticated(true);
     }
+    const userInfo = await getUserInfo();
+    setUser(userInfo);
   };
 
   const handleRegisterSubmit = async () => {
@@ -29,12 +32,12 @@ const AuthScreen: React.FC = () => {
     }
   };
 
-  const handleGetMe = async () => {
-    const values = await getMe();
-    if (values.settings && values.settings.title) {
-      setTitle(values.settings.title);
-    }
-  };
+  // const handleGetMe = async () => {
+  //   const values = await getMe();
+  //   if (values.settings && values.settings.title) {
+  //     setTitle(values.settings.title);
+  //   }
+  // };
 
   const handleLogoutSubmit = async () => {
     handleLogout();
@@ -64,7 +67,7 @@ const AuthScreen: React.FC = () => {
         </>
       ) : (
         <>
-          <Button title="Get Settings" onPress={handleGetMe} />
+          {/* <Button title="Get Settings" onPress={handleGetMe} /> */}
           <Button title="Log Out" onPress={handleLogoutSubmit} />
           {title && <Text>{title}</Text>}
         </>
