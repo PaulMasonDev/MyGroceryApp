@@ -12,8 +12,7 @@ const AuthScreen: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [title, setTitle] = useState("");
-  const { setUser } = useUserStore();
+  const { setUser, logout } = useUserStore();
 
   const handleLoginSubmit = async () => {
     const data = await handleLogin({ username, password });
@@ -32,17 +31,10 @@ const AuthScreen: React.FC = () => {
     }
   };
 
-  // const handleGetMe = async () => {
-  //   const values = await getMe();
-  //   if (values.settings && values.settings.title) {
-  //     setTitle(values.settings.title);
-  //   }
-  // };
-
   const handleLogoutSubmit = async () => {
     handleLogout();
+    logout();
     setIsAuthenticated(false);
-    setTitle("");
   };
 
   return (
@@ -67,9 +59,7 @@ const AuthScreen: React.FC = () => {
         </>
       ) : (
         <>
-          {/* <Button title="Get Settings" onPress={handleGetMe} /> */}
           <Button title="Log Out" onPress={handleLogoutSubmit} />
-          {title && <Text>{title}</Text>}
         </>
       )}
     </View>

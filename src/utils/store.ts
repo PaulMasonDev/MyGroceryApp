@@ -16,6 +16,7 @@ interface UserStore {
   user: User;
   isLoggedIn: boolean;
   setUser: (userData: User) => void;
+  logout: () => void;
   addUserRecipe: (newRecipe: Recipe) => void;
 }
 
@@ -27,6 +28,11 @@ const useUserStore = create<UserStore>((set) => ({
     set(() => ({
       user: userData,
       isLoggedIn: true,
+    }));
+  },
+  logout: () => {
+    set(() => ({
+      isLoggedIn: false,
     }));
   },
   addUserRecipe: (newRecipe) =>
