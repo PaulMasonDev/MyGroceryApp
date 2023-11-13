@@ -8,10 +8,7 @@ const Tab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
   return (
-    <Tab.Navigator
-      initialRouteName="Recipes"
-      screenOptions={({ route }) => ({})}
-    >
+    <Tab.Navigator initialRouteName="Auth" screenOptions={({ route }) => ({})}>
       <Tab.Screen
         name="Auth"
         component={Auth}

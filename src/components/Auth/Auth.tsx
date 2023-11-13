@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TextInput, Button, StyleSheet, Text } from "react-native";
 import {
   handleLogin,
@@ -9,18 +9,24 @@ import {
 import useUserStore from "../../utils/store";
 
 const AuthScreen: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { setUser, logout } = useUserStore();
+  const { user, setUser, logout } = useUserStore();
+
+  useEffect(() => {
+    user.username && setIsAuthenticated(true);
+  }, [user]);
 
   const handleLoginSubmit = async () => {
     const data = await handleLogin({ username, password });
     if (data && data.access_token) {
       setIsAuthenticated(true);
+      const userInfo = await getUserInfo();
+      setUser(userInfo);
     }
-    const userInfo = await getUserInfo();
-    setUser(userInfo);
   };
 
   const handleRegisterSubmit = async () => {
