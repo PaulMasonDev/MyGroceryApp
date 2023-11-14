@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
 import useUserStore from "../../utils/store";
+import { createRecipe } from "../../clientLibrary/Recipes";
+import { getUserInfo } from "../../clientLibrary/Auth";
 
 const RecipeAdd: React.FC = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { addUserRecipe } = useUserStore();
+  const { setUser, setLoading } = useUserStore();
 
   const handleSubmit = async () => {
     if (!name.trim() || !description.trim()) {
@@ -13,13 +15,10 @@ const RecipeAdd: React.FC = () => {
       return;
     }
 
-    // Here, add your API call logic to POST the new recipe
-    // For example: await api.post('/recipes', { name, description });
-
-    // If successful, update the local state using Zustand
-    addUserRecipe({ name, description });
-
-    // Reset form fields
+    setLoading(true);
+    await createRecipe({ name, description });
+    setUser(await getUserInfo());
+    setLoading(false);
     setName("");
     setDescription("");
   };

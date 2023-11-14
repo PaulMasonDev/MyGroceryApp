@@ -1,3 +1,4 @@
-export const BACKEND_API = "http://localhost:8000";
-// export const BACKEND_API = ???
-// This is for future prod deployment. TODO: Create dynamic logic to determine this route.
+export const BACKEND_API =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://grocery-be-production.up.railway.app";

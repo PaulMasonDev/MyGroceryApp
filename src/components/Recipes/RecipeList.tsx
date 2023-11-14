@@ -1,31 +1,35 @@
 import { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, Button } from "react-native";
 import useUserStore from "../../utils/store";
-
-interface Recipe {
-  id: number;
-  name: string;
-  description: string;
-}
+import { deleteRecipe } from "../../clientLibrary/Recipes";
+import { getUserInfo } from "../../clientLibrary/Auth";
 
 const RecipeList: React.FC = () => {
-  const { user } = useUserStore();
-  const [recipes, setRecipes] = useState(user.recipes);
+  const { recipes, setUser, setLoading } = useUserStore();
 
-  useEffect(() => {
-    if (user != null) setRecipes(user.recipes);
-  }, [user]);
+  const handleDeleteRecipe = async (recipeId: number) => {
+    setLoading(true);
+    await deleteRecipe(recipeId);
+    setUser(await getUserInfo());
+    setLoading(false);
+  };
 
-  //TODO: Figure out the best way to refresh recipes. From user object or direct get.
   return (
     <FlatList
       style={styles.recipeList}
       data={recipes}
-      keyExtractor={(item, index) => item.id?.toString() || `item-${index}`}
+      keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
         <View style={styles.recipeItem}>
           <Text style={styles.recipeName}>{item.name}</Text>
           <Text style={styles.recipeDescription}>{item.description}</Text>
+          {item.id && (
+            <Button
+              title="Delete"
+              color="red"
+              onPress={() => handleDeleteRecipe(item.id)}
+            />
+          )}
         </View>
       )}
     />

@@ -6,28 +6,37 @@ interface User {
   settings: any;
 }
 
-interface Recipe {
-  id?: number;
+export interface Recipe {
+  id: number;
   name: string;
   description: string;
 }
 
 interface UserStore {
-  user: User;
+  user: User | null;
+  isLoading: boolean;
+  recipes: Recipe[];
   isLoggedIn: boolean;
-  setUser: (userData: User) => void;
+  setUser: (userData: User | null) => void;
+  setLoading: (value: boolean) => void;
   logout: () => void;
-  addUserRecipe: (newRecipe: Recipe) => void;
 }
 
 const useUserStore = create<UserStore>((set) => ({
   user: {} as User,
+  isLoading: false,
   isLoggedIn: false,
-
-  setUser: (userData: User) => {
+  recipes: [],
+  setUser: (userData: User | null) => {
     set(() => ({
       user: userData,
       isLoggedIn: true,
+      recipes: userData?.recipes,
+    }));
+  },
+  setLoading: (value: boolean) => {
+    set(() => ({
+      isLoading: value,
     }));
   },
   logout: () => {
@@ -35,20 +44,6 @@ const useUserStore = create<UserStore>((set) => ({
       isLoggedIn: false,
     }));
   },
-  addUserRecipe: (newRecipe) =>
-    set((state) => ({
-      user: {
-        ...state.user,
-        recipes: [...state.user.recipes, newRecipe],
-      },
-    })),
-  //   login: (userData) =>
-  //     set((state) => ({
-  //       user: userData,
-  //       isLoggedIn: true,
-  //     })),
-
-  //   logout: () => set({ user: null, isLoggedIn: false }),
 }));
 
 export default useUserStore;

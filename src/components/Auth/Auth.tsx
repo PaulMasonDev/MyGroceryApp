@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, TextInput, Button, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { View, TextInput, Button, StyleSheet } from "react-native";
 import {
   handleLogin,
   handleRegistration,
@@ -9,65 +9,57 @@ import {
 import useUserStore from "../../utils/store";
 
 const AuthScreen: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { user, setUser, logout } = useUserStore();
 
-  useEffect(() => {
-    user.username && setIsAuthenticated(true);
-  }, [user]);
+  const isAuthenticated = (user && !!user.username) || false;
 
   const handleLoginSubmit = async () => {
     const data = await handleLogin({ username, password });
     if (data && data.access_token) {
-      setIsAuthenticated(true);
       const userInfo = await getUserInfo();
       setUser(userInfo);
     }
   };
 
   const handleRegisterSubmit = async () => {
-    const token = await handleRegistration({ username, password });
-    console.log(token);
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    await handleRegistration({ username, password });
+    const userInfo = await getUserInfo();
+    if (userInfo.username) setUser(userInfo);
   };
 
-  const handleLogoutSubmit = async () => {
+  const handleLogoutSubmit = () => {
     handleLogout();
+    setUser(null);
     logout();
-    setIsAuthenticated(false);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <View style={styles.container}>
+        <TextInput
+          value={username}
+          onChangeText={setUsername}
+          placeholder="Username"
+          style={styles.input}
+        />
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Password"
+          secureTextEntry
+          style={styles.input}
+        />
+        <Button title="Log In" onPress={handleLoginSubmit} />
+        <Button title="Register" onPress={handleRegisterSubmit} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {!isAuthenticated ? (
-        <>
-          <TextInput
-            value={username}
-            onChangeText={setUsername}
-            placeholder="Username"
-            style={styles.input}
-          />
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            secureTextEntry
-            style={styles.input}
-          />
-          <Button title="Log In" onPress={handleLoginSubmit} />
-          <Button title="Register" onPress={handleRegisterSubmit} />
-        </>
-      ) : (
-        <>
-          <Button title="Log Out" onPress={handleLogoutSubmit} />
-        </>
-      )}
+      <Button title="Log Out" onPress={handleLogoutSubmit} />
     </View>
   );
 };

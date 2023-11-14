@@ -4,9 +4,10 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import BottomTabNavigator from "./src/components/BottomTabNavigator/BottomTabNavigator";
 import useUserStore from "./src/utils/store";
 import { getUserInfo } from "./src/clientLibrary/Auth";
+import Loader from "./src/utils/Loader/Loader";
 
 function App() {
-  const { setUser } = useUserStore();
+  const { setUser, isLoading } = useUserStore();
   useEffect(() => {
     const getUser = async () => {
       const data = await getUserInfo();
@@ -14,12 +15,16 @@ function App() {
     };
     getUser();
   }, []);
+
   return (
-    <NavigationContainer>
-      <SafeAreaView style={styles.container}>
-        <BottomTabNavigator />
-      </SafeAreaView>
-    </NavigationContainer>
+    <>
+      <Loader isLoading={isLoading} />
+      <NavigationContainer>
+        <SafeAreaView style={styles.container}>
+          <BottomTabNavigator />
+        </SafeAreaView>
+      </NavigationContainer>
+    </>
   );
 }
 
